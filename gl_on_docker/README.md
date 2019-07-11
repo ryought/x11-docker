@@ -60,3 +60,13 @@ docker run --runtime=nvidia -e NVIDIA_VISIBLE_DEVICES=all -it --rm --entrypoint 
 
 /usr/lib/xorg/modules/drivers 
 
+
+
+# vulkanのサポート
+https://github.com/NVIDIA/nvidia-docker/issues/631
+公式にはまだ
+https://github.com/mit-fast/FlightGoggles/issues/46
+
+apt install -y libvulkan1 mesa-vulkan-drivers vulkan-utils
+
+vulkan-smoketest が便利

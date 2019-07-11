@@ -51,6 +51,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         x11vnc && \
     rm -rf /var/lib/apt/lists/*
 
+# vulkan
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        libvulkan1 vulkan-utils && \
+    rm -rf /var/lib/apt/lists/*
+# libvulkan1 mesa-vulkan-drivers vulkan-utils && \
+
 # RUN nvidia-xconfig -a --virtual=1280x1024 --allow-empty-initial-configuration --enable-all-gpus --busid PCI:0:4:0
 # existing one
 COPY xorg.conf /etc/X11/xorg.conf
