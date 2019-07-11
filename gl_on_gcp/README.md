@@ -18,8 +18,9 @@ sshでログイン(ブラウザ上でできる)
 
 GPUの接続確認
 nvidia-smi
+元々410.104が入っていた
 
-ドライバのインストール
+ドライバのインストール(省略可能だった)
 wget http://us.download.nvidia.com/XFree86/Linux-x86_64/410.104/NVIDIA-Linux-x86_64-410.104.run
 chmod +x NVIDIA-Linux-x86_64-410.104.run 
 sudo ./NVIDIA-Linux-x86_64-410.104.run --no-questions --accept-license --no-precompiled-interface --ui=none
