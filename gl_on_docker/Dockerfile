@@ -47,6 +47,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         pkg-config mesa-utils x11-apps && \
     rm -rf /var/lib/apt/lists/*
 
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        x11vnc && \
+    rm -rf /var/lib/apt/lists/*
+
 # RUN nvidia-xconfig -a --virtual=1280x1024 --allow-empty-initial-configuration --enable-all-gpus --busid PCI:0:4:0
 # existing one
 COPY xorg.conf /etc/X11/xorg.conf
