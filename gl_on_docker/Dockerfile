@@ -57,6 +57,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt/lists/*
 # libvulkan1 mesa-vulkan-drivers vulkan-utils && \
 
+# generate
 # RUN nvidia-xconfig -a --virtual=1280x1024 --allow-empty-initial-configuration --enable-all-gpus --busid PCI:0:4:0
-# existing one
+# use existing one
 COPY xorg.conf /etc/X11/xorg.conf
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        python && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY run.sh /run.sh
+CMD ["bash", "/run.sh"]

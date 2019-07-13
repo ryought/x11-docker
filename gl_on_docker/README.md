@@ -58,8 +58,9 @@ root@6108d87b7972:/# ldconfig -p | grep nvidia
 docker run --runtime=nvidia -e NVIDIA_VISIBLE_DEVICES=all -it --rm --entrypoint /bin/bash nvidia/driver:410.104-ubuntu16.04
 > たくさん出る。これはいけるんでは？
 
-/usr/lib/xorg/modules/drivers 
+# ドライバのチェックリスト
 
+/usr/lib/xorg/modules/drivers  Xserver用のドライバ、glx extension
 
 
 # vulkanのサポート
@@ -69,4 +70,6 @@ https://github.com/mit-fast/FlightGoggles/issues/46
 
 apt install -y libvulkan1 mesa-vulkan-drivers vulkan-utils
 
-vulkan-smoketest が便利
+vulkaninfo  ドライバが読み込まれているか?
+
+vulkan-smoketest fpsのテスト
