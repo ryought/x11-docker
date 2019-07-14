@@ -1,5 +1,5 @@
+# WIP
 version: '3'
-
 services:
   x11gl:
     build: .
@@ -8,5 +8,7 @@ services:
     ports:
       - "8080:8080" # aaa
     environment:
-      HOGE: hoge
+      - BUSID: PCI:0:4:0
+      - SCREEN_RESOLUTION: 1280x1024
+      - VNC_PASSWORD: ryought
     privileged: true

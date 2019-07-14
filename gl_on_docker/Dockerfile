@@ -1,7 +1,15 @@
 FROM ubuntu:16.04
+
+# Make all NVIDIA GPUS visible, but I want to manually install drivers
 ARG NVIDIA_VISIBLE_DEVICES=all
+# Supress interactive menu while installing keyboard-configuration
 ARG DEBIAN_FRONTEND=noninteractive
 
+
+# (1) Install Xorg and NVIDIA driver inside the container
+# Almost same procesure as nvidia/driver https://gitlab.com/nvidia/driver/blob/master/ubuntu16.04/Dockerfile
+
+# (1-1) Install prerequisites
 RUN dpkg --add-architecture i386 && \
     apt-get update && apt-get install -y --no-install-recommends \
         apt-utils \
@@ -15,10 +23,15 @@ RUN dpkg --add-architecture i386 && \
         libelf-dev && \
     rm -rf /var/lib/apt/lists/*
 
+# (1-2) Install xorg server and xinit BEFORE INSTALLING NVIDIA DRIVER.
+# After this installation, command Xorg and xinit can be used in the container
 RUN apt-get update && apt-get install -y \
         xinit && \
     rm -rf /var/lib/apt/lists/*
 
+# (1-3) Install NVIDIA drivers, including X graphic drivers
+# Same command as nvidia/driver, except --x-{prefix,module-path,library-path,sysconfig-path} are omitted in order to make use default path and enable X drivers.
+# Driver version must be equal to host's driver
 # Install the userspace components and copy the kernel module sources.
 ENV DRIVER_VERSION=410.104
 RUN cd /tmp && \
@@ -42,29 +55,31 @@ RUN cd /tmp && \
     sed '9,${/^\(kernel\|LICENSE\)/!d}' .manifest > /usr/src/nvidia-$DRIVER_VERSION/.manifest && \
     rm -rf /tmp/*
 
-
+# (2) Configurate Xorg
+# (2-1) Install some necessary softwares
+#
+# pkg-config: nvidia-xconfig requires this package
+# mesa-utils: This package includes glxgears and glxinfo, which is useful for testing GLX drivers
+# x11vnc: Make connection between x11 server and VNC client.
+# x11-apps: xeyes can be used to make sure that X11 server is running.
+#
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        pkg-config mesa-utils x11-apps && \
+        pkg-config \
+        mesa-utils \
+        x11vnc \
+        x11-apps && \
     rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-        x11vnc && \
-    rm -rf /var/lib/apt/lists/*
-
-# vulkan
+# (2-2) Optional vulkan support
 RUN apt-get update && apt-get install -y --no-install-recommends \
         libvulkan1 vulkan-utils && \
     rm -rf /var/lib/apt/lists/*
-# libvulkan1 mesa-vulkan-drivers vulkan-utils && \
 
-# generate
-# RUN nvidia-xconfig -a --virtual=1280x1024 --allow-empty-initial-configuration --enable-all-gpus --busid PCI:0:4:0
+# (2-3) Copy xorg.conf
 # use existing one
 COPY xorg.conf /etc/X11/xorg.conf
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-        python && \
-    rm -rf /var/lib/apt/lists/*
-
+# (3) Run Xorg server + x11vnc + X applications
+# see run.sh for details
 COPY run.sh /run.sh
 CMD ["bash", "/run.sh"]
