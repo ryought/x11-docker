@@ -12,6 +12,6 @@ x11vnc -display :0 -passwd $VNC_PASSWORD -forever &
 sleep 3  # wait for the server gets ready
 
 # 3. start simulator
-DISPLAY=:0
+export DISPLAY=:0
 ./lg/simulator -screen-height 480 -screen-width 640 -screen-quality Beautiful -screen-fullscreen 0
 # ./lg2/simulator
